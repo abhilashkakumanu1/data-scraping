@@ -5,18 +5,7 @@ const ROWS = 100;
 
 export async function getData(query) {
   const data = [];
-  let page = 0;
-
-  //  Initial query to get the number of results, number of pages
-  const params = { q: query, rows: ROWS, page: 0 };
-  const response = await axios.get(BASE_URL, {
-    params,
-  });
-
-  // const totalNumberOfResults = response.headers["x-total-count"];
-  // const totalNumberOfPages = Math.ceil(totalNumberOfResults / ROWS);
-
-  //   console.log(totalNumberOfResults, totalNumberOfPages);
+  let page = 1;
 
   while (true) {
     const params = { q: query, rows: ROWS, page: page };
@@ -29,12 +18,11 @@ export async function getData(query) {
 
     data.push(...processResults(results));
 
+    console.log(`page: ${page}`);
     page++;
 
-    console.log(page);
-
-    if (page === 20) {
-      //   console.log(data);
+    if (page === 100) {
+      console.log(data);
       break;
     }
   }
@@ -44,6 +32,8 @@ export async function getData(query) {
 function processResults(results) {
   const data = results.map((result) => {
     const {
+      osti_id,
+      title,
       authors,
       publication_date,
       research_orgs,
@@ -53,14 +43,16 @@ function processResults(results) {
     } = result;
 
     return {
-      authors: authors.map((author) => `"${author}"`).join(","),
-      publication_date,
-      research_orgs: research_orgs
-        .map((research_org) => `"${research_org}"`)
-        .join(","),
+      title,
+      link: `https://www.osti.gov/biblio/${osti_id}`,
       product_type,
       article_type,
       journal_name,
+      publication_date,
+      authors: authors.map((author) => `"${author}"`).join(","),
+      research_orgs: research_orgs
+        .map((research_org) => `"${research_org}"`)
+        .join(","),
     };
   });
   return data;
