@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = "https://www.osti.gov/api/v1/records";
-const ROWS = 10;
+const ROWS = 150;
 
 export async function getData(query) {
   const data = [];
@@ -20,8 +20,8 @@ export async function getData(query) {
 
     console.log(`page: ${page}`);
 
-    if (page === 2) {
-      console.log(data);
+    if (page === 500) {
+      // console.log(data);
       break;
     }
 
